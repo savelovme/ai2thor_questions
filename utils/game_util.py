@@ -3,6 +3,8 @@ import pdb
 import numpy as np
 import cv2
 from ai2thor import controller
+from ai2thor import wsgi_server
+
 from utils import bb_util
 
 import constants
@@ -13,11 +15,13 @@ def create_env(x_display=constants.X_DISPLAY,
                player_screen_height=constants.SCREEN_HEIGHT,
                player_screen_width=constants.SCREEN_WIDTH):
     print('Creating env')
-    env = controller.Controller(quality=quality)
+    env = controller.Controller(quality=quality,
+                                x_display=x_display,
+                                #server_class=wsgi_server.WsgiServer,
+                                player_screen_height=player_screen_height,
+                                player_screen_width=player_screen_width)
     print('Starting env, if this takes more than a few seconds (except for downloading the build), the display is not set correctly')
-    env.start(x_display=x_display,
-              player_screen_height=player_screen_height,
-              player_screen_width=player_screen_width)
+    #env.start()
     print('Done starting env')
     return env
 
@@ -55,6 +59,12 @@ def distance(state1, state2):
             abs(state1[0]['z'] - state2[0]['z']) +
             abs(state1[1]['x'] - state2[1]['x']) / 15 +
             rot_diff_y)
+
+
+def euclidean_dist(obj1, obj2):
+    x1, y1, z1 = obj1['position'].values()
+    x2, y2, z2 = obj2['position'].values()
+    return np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2)
 
 
 def get_pose(event):

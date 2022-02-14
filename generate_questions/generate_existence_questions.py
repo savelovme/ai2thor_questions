@@ -15,7 +15,7 @@ import constants
 
 all_object_classes = constants.QUESTION_OBJECT_CLASS_LIST
 
-DEBUG = False
+DEBUG = True
 if DEBUG:
     PARALLEL_SIZE = 1
 else:

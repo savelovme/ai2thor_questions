@@ -4,6 +4,7 @@ import random
 import numpy as np
 
 from utils import game_util
+from constants import QUESTION_OBJECT_CLASS_LIST, BUGGED_SCENE_OBJ_PAIRS, MAX_COUNTING_ANSWER
 
 
 class Episode(object):
@@ -34,6 +35,7 @@ class Episode(object):
     def initialize_scene(self, scene_name):
         self.scene_name = scene_name
         self.get_env_info()
+        print("Initialized", scene_name)
 
     def get_env_info(self):
         """Get env specific information."""
@@ -74,22 +76,53 @@ class Episode(object):
         # Find all openable receptacle classes.
         self.openable_receptacle_classes = list(set([item.split(
             '|')[0] for item in self.openable_receptacles]))
-        print('# Openable object_classes:', len(
+        print('# Openable object classes:', len(
             self.openable_receptacle_classes))
+
+        #Find all not openable receptacles.
+        self.not_openable_receptacles = sorted([
+            obj['objectId'] for obj in event.metadata['objects']
+            if obj['receptacle'] and not obj['openable']
+        ])
+        print('# Not openable receptacles:', len(self.not_openable_receptacles))
+
+        # Find all not openable receptacle classes.
+        self.not_openable_receptacle_classes = list(set([item.split(
+            '|')[0] for item in self.not_openable_receptacles]))
+        print('# Not openable receptacles classes:', len(
+            self.not_openable_receptacle_classes))
+
         self.agent_height = event.metadata['agent']['position']['y']
 
-    def initialize_episode(self, scene_seed=None, agent_seed=None, max_num_repeats=10, remove_prob=0.25):
+
+
+    def initialize_episode(self, scene_seed=None, agent_seed=None, num_duplicates=MAX_COUNTING_ANSWER, max_num_repeats=10, remove_prob=0.25):
         """Initializes environment with given scene and random seed."""
         # Reset the scene with some random seed.
         if scene_seed is None:
             scene_seed = random.randint(0, 999999999)
+        #print("Scene seed: ", scene_seed)
         if agent_seed is None:
             agent_seed = random.randint(0, 999999999)
+        random.seed(scene_seed)
         self.event = game_util.reset(self.env, self.scene_name,
                                 render_depth_image=False,
                                 render_class_image=False,
                                 render_object_image=True)
-        self.event = self.env.random_initialize(random_seed=scene_seed, max_num_repeats=max_num_repeats, remove_prob=remove_prob)
+
+        if num_duplicates is None:
+            duplicates = None
+        else:
+            duplicates = [{"objectType": objType, "count": num_duplicates} for objType in QUESTION_OBJECT_CLASS_LIST if random.random() < 1.0/num_duplicates]
+        self.event = self.env.step(action="InitialRandomSpawn", randomSeed=scene_seed,
+                                   numDuplicatesOfType=duplicates, numPlacementAttempts=max_num_repeats)
+
+        for obj in self.event.metadata['objects']:
+            if obj['pickupable'] and random.random() < remove_prob:
+                if (self.scene_name, obj['objectType']) in BUGGED_SCENE_OBJ_PAIRS:
+                    continue
+                self.event = self.env.step(action="RemoveFromScene", objectId=obj['objectId'])
+
         self.agent_height = self.event.metadata['agent']['position']['y']
 
         self.is_initialized = True

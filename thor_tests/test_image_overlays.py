@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import scipy.misc
+import imageio
 from utils import game_util
 
 def assert_image(expected_image, actual_image, raise_if_fail=True):
@@ -49,11 +50,11 @@ def test_depth_and_ids_images(env):
         event = env.step({'action': 'MoveAhead'})
 
         quantized_depth = (event.depth_frame / 5000 * 255).astype(np.uint8)
-        compare_image = scipy.misc.imread(os.path.join('thor_tests', 'test_images', 'test_image_depth_%d.png' % scene_num))
+        compare_image = imageio.imread(os.path.join('thor_tests', 'test_images', 'test_image_depth_%d.png' % scene_num))
         assert_image(compare_image, quantized_depth)
 
         ids_image = event.class_segmentation_frame
-        compare_image = scipy.misc.imread(os.path.join('thor_tests', 'test_images', 'test_image_ids_%d.png' % scene_num))
+        compare_image = imageio.imread(os.path.join('thor_tests', 'test_images', 'test_image_ids_%d.png' % scene_num))
         assert_image(compare_image, ids_image)
 
     compare_images_for_scene(1, (1.5, -1))

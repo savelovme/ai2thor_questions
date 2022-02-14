@@ -246,9 +246,9 @@ MAX_DEPTH = 5000
 PREDICT_DEPTH_SLOPE = 1.1885502493692868   # Computed multiplicative bias for depth prediction network
 PREDICT_DEPTH_INTERCEPT = 228.55248115021686 # Computed bias for depth prediction network
 
-TRAIN_SCENE_NUMBERS = list(range(6, 31))
+TRAIN_SCENE_NUMBERS = [i for i in range(6,31) if i not in {7, 12, 15, 21}]#list(range(6, 31))
 
-TEST_SCENE_NUMBERS = list(range(1, 6))
+TEST_SCENE_NUMBERS = [i for i in range(1,6) if i not in {2}]#list(range(1, 6))
 
 SCENE_NUMBERS = TRAIN_SCENE_NUMBERS if not EVAL else TEST_SCENE_NUMBERS
 
@@ -274,6 +274,13 @@ OBJECTS = [
     'Microwave',
     'Fridge',
     'Cabinet',
+    'Pan',
+    'Kettle',
+    'DishSponge',
+    'SoapBottle',
+    'Cup',
+    'PaperTowelRoll',
+    'Pot'
     ]
 OBJECTS_SINGULAR = [
     'background',
@@ -297,6 +304,13 @@ OBJECTS_SINGULAR = [
     'microwave',
     'fridge',
     'cabinet',
+    'pan',
+    'kettle',
+    'dish sponge',
+    'soap bottle',
+    'cup',
+    'paper towel roll',
+    'pot'
     ]
 
 OBJECTS_PLURAL = [
@@ -321,12 +335,21 @@ OBJECTS_PLURAL = [
     'microwaves',
     'fridges',
     'cabinets',
+    'pans',
+    'kettles',
+    'dish sponges',
+    'soap bottles',
+    'cups',
+    'paper towel rolls',
+    'pots'
     ]
 
 OBJECTS_SET = set(OBJECTS)
 OBJECT_CLASS_TO_ID = {obj: ii for (ii, obj) in enumerate(OBJECTS)}
 
-RECEPTACLES = {'Sink', 'StoveBurner', 'TableTop', 'GarbageCan', 'Microwave', 'Fridge', 'Cabinet'}
+RECEPTACLES = ['Sink', 'StoveBurner', 'TableTop', 'GarbageCan', 'Microwave', 'Fridge', 'Cabinet', 'Pan', 'Plate']
+PARENT_CLASS_TO_ID = {obj: ii for (ii, obj) in enumerate(RECEPTACLES)}
+
 
 NUM_RECEPTACLES = len(RECEPTACLES)
 NUM_OBJECTS = len(OBJECTS) - NUM_RECEPTACLES - 2
@@ -346,10 +369,11 @@ QUESTION_OBJECT_CLASS_LIST = [
     'Knife',
     'Container',
     'Bread',
-    'Mug',
+    'Mug'
     ]
 
 QUESTION_OBJECT_CLASS_TO_ID = {obj: ii for (ii, obj) in enumerate(QUESTION_OBJECT_CLASS_LIST)}
+
 # List of openable classes.
 OPENABLE_CLASS_LIST = ['Fridge', 'Cabinet', 'Microwave']
 OPENABLE_CLASS_SET = set(OPENABLE_CLASS_LIST)
@@ -357,6 +381,36 @@ OPENABLE_CLASS_SET = set(OPENABLE_CLASS_LIST)
 # Question stuff
 MAX_SENTENCE_LENGTH = 17
 MAX_COUNTING_ANSWER = 3
+
+LOGICAL_OPERATORS = ['and', 'or']
+LOGICAL_OPERATOR_TO_ID = {'and': 0, 'or': 1}
+
+QUESTION_MATERIALS = [
+    'Ceramic',
+    'Glass',
+    'Metal',
+    'Paper',
+    'Plastic',
+    'Sponge',
+    'Stone',
+    'Wood'
+    ]
+MATERIAL_TO_ID = {obj: ii for (ii, obj) in enumerate(QUESTION_MATERIALS)}
+
+MIN_SIZE_DIFF = 0.05
+
+# RemoveFromScene bug
+BUGGED_SCENE_OBJ_PAIRS = {
+    ("FloorPlan10", "Knife"),
+    ("FloorPlan12", "Knife"),
+    ("FloorPlan18", "Knife"),
+    ("FloorPlan25", "Ladle"),
+    ("FloorPlan25", "Spatula"),
+    ("FloorPlan26", "Fork"),
+    ("FloorPlan26", "Spoon")}
+
+# Teleport bug
+BUGGED_TP_SCENES = {"FloorPlan5", "FloorPlan7", "FloorPlan12", "FloorPlan15", "FloorPlan21"}
 
 np.set_printoptions(precision=4)
 np.set_printoptions(suppress=True)
