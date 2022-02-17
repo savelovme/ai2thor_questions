@@ -6,17 +6,19 @@ import random
 import numpy as np
 import h5py
 import multiprocessing
+import cv2
 from utils import game_util
 from utils import py_util
 from graph import graph_obj
+from generate_questions.reachability import are_reachable, get_object_frame
 from generate_questions.new_questions import ExistenceQuestion
-from generate_questions.check_reachability import are_reachable
+
 
 import constants
 
 all_object_classes = constants.QUESTION_OBJECT_CLASS_LIST
 
-DEBUG = False
+DEBUG = True
 if DEBUG:
     PARALLEL_SIZE = 1
 else:
@@ -79,9 +81,6 @@ def main(dataset_type):
 
                 grid_file = 'layouts/%s-layout.npy' % scene_name
                 xray_graph = graph_obj.Graph(grid_file, use_gt=True, construct_graph=False)
-                scene_bounds = [xray_graph.xMin, xray_graph.yMin,
-                    xray_graph.xMax - xray_graph.xMin + 1,
-                    xray_graph.yMax - xray_graph.yMin + 1]
 
                 for i in range(20):  # try 20 times
                     scene_seed = random.randint(0, 999999999)
@@ -93,6 +92,13 @@ def main(dataset_type):
                         objectIds = [obj['objectId'] for obj in episode.event.metadata['objects'] if obj['objectType']==object_class]
                         if not are_reachable(episode, xray_graph, objectIds=objectIds, search_for='any', DEBUG=DEBUG):
                             answer = None
+
+                    if answer is not None:
+                        image = get_object_frame(episode, xray_graph, object_class)
+                        #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                        cv2.imwrite("test_img.png", image)
+                        print("Image saved")
+
 
                     print(str(question), answer)
 
