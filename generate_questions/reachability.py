@@ -11,13 +11,18 @@ def are_reachable(episode, xray_graph, objectIds=[], search_for='all', DEBUG=Fal
 
     xray_graph.memory[:, :, 1:] = 0
 
+    if len(objectIds) == 1:
+        search_for = 'any'
+
     for obj in episode.get_objects():
         if obj['objectId'] not in objectIds or obj['parentReceptacles'] is None:
             continue
         if DEBUG:
             print(obj['objectId'], 'is in', obj['parentReceptacles'])
-        if any([rec in par for rec in ("Fridge", "Drawer", "Cabinet", "Microwave") for par in obj['parentReceptacles']]) and search_for == 'all':
-            return False
+        if len(set(obj['parentReceptacles']) & set(episode.openable_receptacles)) > 0:
+            if search_for == 'all':
+                return False
+            continue
 
         obj_point = game_util.get_object_point(obj, scene_bounds)
         xray_graph.memory[obj_point[1], obj_point[0],
@@ -37,7 +42,7 @@ def are_reachable(episode, xray_graph, objectIds=[], search_for='all', DEBUG=Fal
                             'y': episode.agent_height,
                             'z': start_point[1] * constants.AGENT_STEP_SIZE,
                             'rotation': start_point[2] * 90,
-                            'horizon': 0,
+                            'horizon': 30,
                             'standing': True
                         }
                 if DEBUG:
@@ -55,7 +60,7 @@ def are_reachable(episode, xray_graph, objectIds=[], search_for='all', DEBUG=Fal
                             xray_graph.memory[
                                 obj_point[1], obj_point[0], constants.OBJECT_CLASS_TO_ID[obj['objectType']] + 1] = 0
 
-                event = episode.env.step(action="LookDown")
+                event = episode.env.step(action="LookUp")
                 for obj in event.metadata['objects']:
                     if obj['objectId'] not in objectIds:
                         continue
@@ -76,7 +81,7 @@ def are_reachable(episode, xray_graph, objectIds=[], search_for='all', DEBUG=Fal
     return False
 
 
-def get_object_frame(episode, xray_graph, object_class):
+def get_object_cv2img(episode, xray_graph, object_class):
 
     scene_bounds = [xray_graph.xMin, xray_graph.yMin,
                     xray_graph.xMax - xray_graph.xMin + 1,
@@ -97,21 +102,22 @@ def get_object_frame(episode, xray_graph, object_class):
         for obj in episode.get_objects():
             if not obj['pickupable'] or obj['objectType'] not in constants.OBJECTS:
                 continue
-            if len(set(obj['parentReceptacles']) & set(episode.not_openable_receptacles)) == 0:
+            if len(set(obj['parentReceptacles']) & set(episode.openable_receptacles)) > 0:
                 continue
             objectIds.append(obj['objectId'])
             obj_point = game_util.get_object_point(obj, scene_bounds)
             xray_graph.memory[obj_point[1], obj_point[0],
                               constants.OBJECT_CLASS_TO_ID[obj['objectType']] + 1] = 1
-            break
 
     if len(objectIds) == 0:
         return episode.event.frame
 
-
     graph_points = xray_graph.points.copy()
-    distances
-    graph_points = graph_points[np.random.permutation(graph_points.shape[0]), :]
+    _, x_str, y_str, z_str = objectIds[0].split('|')
+    x = float(x_str.replace(',', '.').replace('+', ''))
+    z = float(z_str.replace(',', '.').replace('+', ''))
+    distances = [abs(p[0]*constants.AGENT_STEP_SIZE - x) + abs(p[1]*constants.AGENT_STEP_SIZE - z) for p in graph_points]
+    graph_points = graph_points[np.argsort(distances), :]
     for start_point in graph_points:
         headings = np.random.permutation(4)
         for heading in headings:
@@ -140,4 +146,4 @@ def get_object_frame(episode, xray_graph, object_class):
                     if obj['visible']:
                         return event.cv2img
 
-    return episode.event.cv2img
+    return None#episode.event.cv2img

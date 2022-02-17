@@ -14,13 +14,13 @@ from generate_questions.check_reachability import are_reachable
 
 import constants
 
-all_object_classes = constants.OBJECTS #QUESTION_OBJECT_CLASS_LIST
+all_object_classes = constants.MATERIAL_OBJECTS
 
-DEBUG = True
+DEBUG = False
 if DEBUG:
     PARALLEL_SIZE = 1
 else:
-    PARALLEL_SIZE = 8
+    PARALLEL_SIZE = 6
 
 
 def main(dataset_type):
@@ -76,8 +76,11 @@ def main(dataset_type):
 
                 grid_file = 'layouts/%s-layout.npy' % scene_name
                 xray_graph = graph_obj.Graph(grid_file, use_gt=True, construct_graph=False)
+                scene_bounds = [xray_graph.xMin, xray_graph.yMin,
+                    xray_graph.xMax - xray_graph.xMin + 1,
+                    xray_graph.yMax - xray_graph.yMin + 1]
 
-                for i in range(20):  # try 20 times
+                for i in range(20):  # try 10 times
                     scene_seed = random.randint(0, 999999999)
                     episode.initialize_episode(scene_seed=scene_seed)  # randomly initialize the scene
                     answer = question.get_answer(episode)

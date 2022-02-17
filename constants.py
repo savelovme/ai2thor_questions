@@ -280,8 +280,17 @@ OBJECTS = [
     'SoapBottle',
     'Cup',
     'PaperTowelRoll',
-    'Pot'
-    ]
+    'Pot',
+    'Bottle',
+    'WineBottle'
+    'Vase',
+    'DiningTable',
+    'ButterKnife',
+    'Spatula',
+    'Stool',
+    'CoffeeMachine'
+]
+
 OBJECTS_SINGULAR = [
     'background',
     'spoon',
@@ -310,7 +319,15 @@ OBJECTS_SINGULAR = [
     'soap bottle',
     'cup',
     'paper towel roll',
-    'pot'
+    'pot',
+    'bottle',
+    'wine bottle'
+    'vase',
+    'dining table',
+    'butter knife',
+    'spatula',
+    'stool',
+    'coffee machine'
     ]
 
 OBJECTS_PLURAL = [
@@ -341,7 +358,15 @@ OBJECTS_PLURAL = [
     'soap bottles',
     'cups',
     'paper towel rolls',
-    'pots'
+    'pots',
+    'bottles',
+    'wine bottles'
+    'vases',
+    'dining tables',
+    'butter knifes',
+    'spatulas',
+    'stools',
+    'coffee machines'
     ]
 
 OBJECTS_SET = set(OBJECTS)
@@ -387,15 +412,45 @@ LOGICAL_OPERATOR_TO_ID = {'and': 0, 'or': 1}
 
 QUESTION_MATERIALS = [
     'Ceramic',
+    'Fabric',
+    'Food',
     'Glass',
     'Metal',
+    'Organic',
     'Paper',
     'Plastic',
+    'Rubber',
     'Sponge',
     'Stone',
     'Wood'
-    ]
+]
 MATERIAL_TO_ID = {obj: ii for (ii, obj) in enumerate(QUESTION_MATERIALS)}
+
+MATERIAL_OBJECTS = [
+    'Microwave',
+    'Kettle',
+    'Bread',
+    'Bottle',
+    'GarbageCan',
+    'Pot',
+    'Knife',
+    'Pan',
+    'PaperTowelRoll',
+    'Lettuce',
+    'SoapBottle',
+    'DiningTable',
+    'Cup',
+    'Plate',
+    'Fork',
+    'Spatula',
+    'Bowl',
+    'Mug',
+    'Spoon',
+    'DishSponge',
+    'ButterKnife',
+    'Stool',
+    'CoffeeMachine'
+]
 
 MIN_SIZE_DIFF = 0.05
 
