@@ -13,13 +13,17 @@ import constants
 def create_env(x_display=constants.X_DISPLAY,
                quality='MediumCloseFitShadows',
                player_screen_height=constants.SCREEN_HEIGHT,
-               player_screen_width=constants.SCREEN_WIDTH):
+               player_screen_width=constants.SCREEN_WIDTH,
+               width=constants.SCREEN_WIDTH,
+               height=constants.SCREEN_HEIGHT):
     print('Creating env')
     env = controller.Controller(quality=quality,
                                 x_display=x_display,
                                 #server_class=wsgi_server.WsgiServer,
                                 player_screen_height=player_screen_height,
-                                player_screen_width=player_screen_width)
+                                player_screen_width=player_screen_width,
+                                width=width,
+                                height=height)
     print('Starting env, if this takes more than a few seconds (except for downloading the build), the display is not set correctly')
     #env.start()
     print('Done starting env')

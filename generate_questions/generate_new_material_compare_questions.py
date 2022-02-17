@@ -10,7 +10,7 @@ from utils import game_util
 from utils import py_util
 from graph import graph_obj
 from generate_questions.new_questions import MaterialCompareQuestion
-from generate_questions.check_reachability import are_reachable
+from generate_questions.reachability import are_reachable
 
 import constants
 
@@ -20,22 +20,22 @@ DEBUG = False
 if DEBUG:
     PARALLEL_SIZE = 1
 else:
-    PARALLEL_SIZE = 8
+    PARALLEL_SIZE = 6
 
 
 def main(dataset_type):
     if dataset_type == 'val/unseen_scenes':
-        num_questions_per_scene = round(24.0 / PARALLEL_SIZE)
+        num_questions_per_scene = round(48.0 / PARALLEL_SIZE)
         scene_numbers = constants.TEST_SCENE_NUMBERS
-        num_samples_per_scene = 4
+        num_samples_per_scene = 8
     elif dataset_type == 'val/seen_scenes':
         num_questions_per_scene = round(12.0 / PARALLEL_SIZE)
         scene_numbers = constants.TRAIN_SCENE_NUMBERS
         num_samples_per_scene = 4
     elif dataset_type == 'train':
-        num_questions_per_scene = round(24.0 / PARALLEL_SIZE)
+        num_questions_per_scene = round(48.0 / PARALLEL_SIZE)
         scene_numbers = constants.TRAIN_SCENE_NUMBERS
-        num_samples_per_scene = 4
+        num_samples_per_scene = 8
     else:
         raise Exception('No test set found')
     num_record = int(num_samples_per_scene * np.ceil(num_questions_per_scene * 1.0 / num_samples_per_scene) * len(scene_numbers))

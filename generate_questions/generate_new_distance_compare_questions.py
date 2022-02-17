@@ -16,26 +16,26 @@ import constants
 
 all_object_classes = constants.OBJECTS
 
-DEBUG = True
+DEBUG = False
 if DEBUG:
     PARALLEL_SIZE = 1
 else:
-    PARALLEL_SIZE = 8
+    PARALLEL_SIZE = 6
 
 
 def main(dataset_type):
     if dataset_type == 'val/unseen_scenes':
-        num_questions_per_scene = round(24.0 / PARALLEL_SIZE)
+        num_questions_per_scene = round(48.0 / PARALLEL_SIZE)
         scene_numbers = constants.TEST_SCENE_NUMBERS
-        num_samples_per_scene = 4
+        num_samples_per_scene = 8
     elif dataset_type == 'val/seen_scenes':
         num_questions_per_scene = round(12.0 / PARALLEL_SIZE)
         scene_numbers = constants.TRAIN_SCENE_NUMBERS
         num_samples_per_scene = 4
     elif dataset_type == 'train':
-        num_questions_per_scene = round(24.0 / PARALLEL_SIZE)
+        num_questions_per_scene = round(48.0 / PARALLEL_SIZE)
         scene_numbers = constants.TRAIN_SCENE_NUMBERS
-        num_samples_per_scene = 4
+        num_samples_per_scene = 8
     else:
         raise Exception('No test set found')
     num_record = int(num_samples_per_scene * np.ceil(num_questions_per_scene * 1.0 / num_samples_per_scene) * len(scene_numbers))
@@ -90,9 +90,7 @@ def main(dataset_type):
                         objectIds = [obj['objectId'] for obj in episode.event.metadata['objects'] if
                                       obj['objectType'] in (object1_class, object2_class, object3_class)]
 
-                        objs_reachable = are_reachable(episode, xray_graph, objectIds=objectIds, search_for='all',
-                                                       DEBUG=DEBUG)
-                        if not objs_reachable:
+                        if not are_reachable(episode, xray_graph, objectIds=objectIds, search_for='all', DEBUG=DEBUG):
                             answer = None
 
                     print(str(question), answer)
