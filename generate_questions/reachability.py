@@ -60,7 +60,7 @@ def are_reachable(episode, xray_graph, objectIds=[], search_for='all', DEBUG=Fal
                             xray_graph.memory[
                                 obj_point[1], obj_point[0], constants.OBJECT_CLASS_TO_ID[obj['objectType']] + 1] = 0
 
-                event = episode.env.step(action="LookUp")
+                event = episode.env.step(action="LookUp", degrees=60)
                 for obj in event.metadata['objects']:
                     if obj['objectId'] not in objectIds:
                         continue

@@ -90,9 +90,7 @@ def main(dataset_type):
                         objectIds = [obj['objectId'] for obj in episode.event.metadata['objects'] if
                                       obj['objectType'] in (object1_class, object2_class, object3_class)]
 
-                        objs_reachable = are_reachable(episode, xray_graph, objectIds=objectIds, search_for='all',
-                                                       DEBUG=DEBUG)
-                        if not objs_reachable:
+                        if not are_reachable(episode, xray_graph, objectIds=objectIds, search_for='all', DEBUG=DEBUG):
                             answer = None
 
                     print(str(question), answer)

@@ -282,7 +282,7 @@ OBJECTS = [
     'PaperTowelRoll',
     'Pot',
     'Bottle',
-    'WineBottle'
+    'WineBottle',
     'Vase',
     'DiningTable',
     'ButterKnife',
@@ -321,7 +321,7 @@ OBJECTS_SINGULAR = [
     'paper towel roll',
     'pot',
     'bottle',
-    'wine bottle'
+    'wine bottle',
     'vase',
     'dining table',
     'butter knife',
@@ -360,7 +360,7 @@ OBJECTS_PLURAL = [
     'paper towel rolls',
     'pots',
     'bottles',
-    'wine bottles'
+    'wine bottles',
     'vases',
     'dining tables',
     'butter knifes',

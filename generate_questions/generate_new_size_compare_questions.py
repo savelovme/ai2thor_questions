@@ -10,7 +10,7 @@ from utils import game_util
 from utils import py_util
 from graph import graph_obj
 from generate_questions.new_questions import SizeCompareQuestion
-from generate_questions.check_reachability import are_reachable
+from generate_questions.reachability import are_reachable
 
 import constants
 
