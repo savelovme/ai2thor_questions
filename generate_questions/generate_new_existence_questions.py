@@ -22,20 +22,20 @@ DEBUG = True
 if DEBUG:
     PARALLEL_SIZE = 1
 else:
-    PARALLEL_SIZE = 6
+    PARALLEL_SIZE = 12
 
 
 def main(dataset_type):
     if dataset_type == 'val/unseen_scenes':
-        num_questions_per_scene = round(48.0 / PARALLEL_SIZE)
+        num_questions_per_scene = round(1000.0 / PARALLEL_SIZE)
         scene_numbers = constants.TEST_SCENE_NUMBERS
         num_samples_per_scene = 8
     elif dataset_type == 'val/seen_scenes':
-        num_questions_per_scene = round(12.0 / PARALLEL_SIZE)
+        num_questions_per_scene = round(100.0 / PARALLEL_SIZE)
         scene_numbers = constants.TRAIN_SCENE_NUMBERS
         num_samples_per_scene = 4
     elif dataset_type == 'train':
-        num_questions_per_scene = round(48.0 / PARALLEL_SIZE)
+        num_questions_per_scene = round(1000.0 / PARALLEL_SIZE)
         scene_numbers = constants.TRAIN_SCENE_NUMBERS
         num_samples_per_scene = 8
     else:
@@ -79,8 +79,11 @@ def main(dataset_type):
                 temp_data = []
                 num_tries += 1
 
-                grid_file = 'layouts/%s-layout.npy' % scene_name
-                xray_graph = graph_obj.Graph(grid_file, use_gt=True, construct_graph=False)
+                positions = episode.env.step(
+                    action="GetReachablePositions"
+                ).metadata["actionReturn"]
+                reachable_points = np.array([[p['x'], p['z']] for p in positions])
+                xray_graph = graph_obj.Graph(reachable_points, use_gt=True, construct_graph=False)
 
                 for i in range(20):  # try 20 times
                     scene_seed = random.randint(0, 999999999)
@@ -93,11 +96,11 @@ def main(dataset_type):
                         if not are_reachable(episode, xray_graph, objectIds=objectIds, search_for='any', DEBUG=DEBUG):
                             answer = None
 
-                    if answer is not None:
-                        image = get_object_cv2img(episode, xray_graph, object_class)
-                        #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-                        cv2.imwrite(f"img_test/{scene_num}_{scene_seed}_{object_class}.png", image)
-                        print("Image saved")
+                    #if answer is not None:
+                    #    image = get_object_cv2img(episode, xray_graph, object_class)
+                    #    #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                    #    cv2.imwrite(f"img_test/{scene_num}_{scene_seed}_{object_class}.png", image)
+                    #    print("Image saved")
 
 
                     print(str(question), answer)
