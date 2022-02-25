@@ -81,7 +81,7 @@ def are_reachable(episode, xray_graph, objectIds=[], search_for='all', DEBUG=Fal
     return False
 
 
-def get_object_cv2img(episode, xray_graph, object_class):
+def get_object_cv2img(episode, xray_graph, object_class, parent_object_class=None):
 
     scene_bounds = [xray_graph.xMin, xray_graph.yMin,
                     xray_graph.xMax - xray_graph.xMin + 1,
@@ -93,6 +93,8 @@ def get_object_cv2img(episode, xray_graph, object_class):
     for obj in episode.get_objects():
         if obj['objectType'] != object_class:
             continue
+        if parent_object_class is not None and obj['parentReceptacles'] is not None and not any([parent_object_class in r for r in obj['parentReceptacles']]):
+            continue
         objectIds.append(obj['objectId'])
         obj_point = game_util.get_object_point(obj, scene_bounds)
         xray_graph.memory[obj_point[1], obj_point[0],
@@ -102,7 +104,7 @@ def get_object_cv2img(episode, xray_graph, object_class):
         for obj in episode.get_objects():
             if not obj['pickupable'] or obj['objectType'] not in constants.OBJECTS:
                 continue
-            if len(set(obj['parentReceptacles']) & set(episode.openable_receptacles)) > 0:
+            if obj['parentReceptacles'] is not None and len(set(obj['parentReceptacles']) & set(episode.openable_receptacles)) > 0:
                 continue
             objectIds.append(obj['objectId'])
             obj_point = game_util.get_object_point(obj, scene_bounds)
@@ -116,11 +118,10 @@ def get_object_cv2img(episode, xray_graph, object_class):
     _, x_str, y_str, z_str = objectIds[0].split('|')
     x = float(x_str.replace(',', '.').replace('+', ''))
     z = float(z_str.replace(',', '.').replace('+', ''))
-    distances = [abs(p[0]*constants.AGENT_STEP_SIZE - x) + abs(p[1]*constants.AGENT_STEP_SIZE - z) for p in graph_points]
+    distances = [(p[0]*constants.AGENT_STEP_SIZE - x)**2 + (p[1]*constants.AGENT_STEP_SIZE - z)**2 for p in graph_points]
     graph_points = graph_points[np.argsort(distances), :]
     for start_point in graph_points:
-        headings = np.random.permutation(4)
-        for heading in headings:
+        for heading in range(4):
             start_point = (start_point[0], start_point[1], heading)
             patch = xray_graph.get_graph_patch(start_point)[0]
             if patch[:, :, 1:].max() > 0:

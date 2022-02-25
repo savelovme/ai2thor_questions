@@ -179,6 +179,8 @@ SCREEN_WIDTH = 300
 SCREEN_HEIGHT = 300
 CAMERA_HEIGHT_OFFSET = 0.75
 
+IMAGE_SIZE = 512
+
 ########################################################################################################################
 # Network hyperparameters
 MEMORY_SIZE = 32
@@ -452,6 +454,7 @@ MATERIAL_OBJECTS = [
     'CoffeeMachine'
 ]
 
+#Distance and size questions
 MIN_SIZE_DIFF = 0.05
 
 # RemoveFromScene bug

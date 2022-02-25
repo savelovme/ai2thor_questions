@@ -4,25 +4,28 @@ import random
 import numpy as np
 
 from utils import game_util
-from constants import QUESTION_OBJECT_CLASS_LIST, BUGGED_SCENE_OBJ_PAIRS, MAX_COUNTING_ANSWER
+from constants import QUESTION_OBJECT_CLASS_LIST, BUGGED_SCENE_OBJ_PAIRS, MAX_COUNTING_ANSWER, IMAGE_SIZE
 
 
 class Episode(object):
     """Manages an episode in the THOR env."""
 
-    def __init__(self):
+    def __init__(self, image_gen=False):
         """Init function
            Inputs:
         """
 
         # Start the environment.
-        self.env = self.start_env()
+        self.env = self.start_env(image_gen)
         self.event = None
         self.is_initialized = False
 
-    def start_env(self):
+    def start_env(self, image_gen):
         """Starts the environment."""
-        env = game_util.create_env()  # quality='Very Low'
+        if image_gen:
+            env = game_util.create_env(width=IMAGE_SIZE, height=IMAGE_SIZE)
+        else:
+            env = game_util.create_env(quality='Very Low')
         return env
 
     def stop_env(self):

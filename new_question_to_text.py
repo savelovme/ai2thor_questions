@@ -16,7 +16,7 @@ def main():
         out_file = open(os.path.splitext(file_name)[0] + '.csv', 'w')
 
         print('Processing file', file_name)
-        out_file.write('question_type;scene_number;seed;question;answer;question_object_ids; container_id\n')
+        out_file.write('question_type;scene_number;seed;question;answer;question_object_ids;container_id\n')
         if 'data_existence' in file_name:
             question_type = 'existence'
         elif 'data_logical' in file_name:
