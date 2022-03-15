@@ -82,7 +82,7 @@ def main(dataset_type):
 
                 for i in range(20):  # try 20 times
                     scene_seed = random.randint(0, 999999999)
-                    episode.initialize_episode(scene_seed=scene_seed, num_duplicates=None, remove_prob=0)  # randomly initialize the scene
+                    episode.initialize_episode(scene_seed=scene_seed)#, num_duplicates=None, remove_prob=0)  # randomly initialize the scene
                     answer = question.get_answer(episode)
 
                     if answer is not None:

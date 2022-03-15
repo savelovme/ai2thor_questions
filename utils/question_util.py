@@ -18,7 +18,7 @@ def get_question_str(question_type, question_object_inds, question_container_ind
         if constants.OBJECTS_SINGULAR[question_container_ind] in {'fridge', 'microwave', 'sink'}:
             container_article = 'the'
 
-        if constants.OBJECTS[question_container_ind] in {'Box', 'GarbageCan', 'Pot', 'Sink', 'Pan'}:
+        if constants.RECEPTACLES[question_container_ind] in {'Box', 'GarbageCan', 'Pot', 'Sink', 'Pan'}:
             preposition = 'in'
         else:
             preposition = 'on'
@@ -101,9 +101,9 @@ def get_question_str(question_type, question_object_inds, question_container_ind
 
         template_ind = random.randint(0, 1)
         if template_ind == 0:
-            return "What is %s %s %s?" % (preposition, container_article, constants.OBJECTS_SINGULAR[question_container_ind])
+            return "What is %s %s %s?" % (preposition, container_article, constants.PARENTS_SINGULAR[question_container_ind])
         elif template_ind == 1:
-            return "There is something %s %s %s. What is it?" % (preposition, container_article, constants.OBJECTS_SINGULAR[question_container_ind])
+            return "There is something %s %s %s. What is it?" % (preposition, container_article, constants.PARENTS_SINGULAR[question_container_ind])
 
     elif question_type == 'material':
 

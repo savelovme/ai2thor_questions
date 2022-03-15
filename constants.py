@@ -290,7 +290,8 @@ OBJECTS = [
     'ButterKnife',
     'Spatula',
     'Stool',
-    'CoffeeMachine'
+    'CoffeeMachine',
+    'SaltShaker'
 ]
 
 OBJECTS_SINGULAR = [
@@ -329,7 +330,8 @@ OBJECTS_SINGULAR = [
     'butter knife',
     'spatula',
     'stool',
-    'coffee machine'
+    'coffee machine',
+    'salt shaker'
     ]
 
 OBJECTS_PLURAL = [
@@ -368,13 +370,15 @@ OBJECTS_PLURAL = [
     'butter knifes',
     'spatulas',
     'stools',
-    'coffee machines'
+    'coffee machines',
+    'salt shakers'
     ]
 
 OBJECTS_SET = set(OBJECTS)
 OBJECT_CLASS_TO_ID = {obj: ii for (ii, obj) in enumerate(OBJECTS)}
 
 RECEPTACLES = ['Sink', 'StoveBurner', 'TableTop', 'GarbageCan', 'Microwave', 'Fridge', 'Cabinet', 'Pan', 'Plate']
+PARENTS_SINGULAR = ['sink', 'stove burner', 'table top', 'garbage can', 'microwave', 'fridge', 'cabinet', 'pan', 'plate']
 PARENT_CLASS_TO_ID = {obj: ii for (ii, obj) in enumerate(RECEPTACLES)}
 
 

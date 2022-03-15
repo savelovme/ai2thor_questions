@@ -10,7 +10,7 @@ import cv2
 from utils import game_util
 from utils import py_util
 from graph import graph_obj
-from generate_questions.reachability import are_reachable, get_object_cv2img
+from generate_questions.reachability import are_reachable
 from generate_questions.new_questions import ExistenceQuestion
 
 
@@ -18,7 +18,7 @@ import constants
 
 all_object_classes = constants.QUESTION_OBJECT_CLASS_LIST
 
-DEBUG = True
+DEBUG = False
 if DEBUG:
     PARALLEL_SIZE = 1
 else:

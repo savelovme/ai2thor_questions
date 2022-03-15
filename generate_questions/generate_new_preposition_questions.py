@@ -42,6 +42,7 @@ def main(dataset_type):
 
     assert(num_samples_per_scene % 4 == 0)
 
+
     def create_dump():
         time_str = py_util.get_time_str()
         prefix = 'questions/'
@@ -87,8 +88,9 @@ def main(dataset_type):
 
                     if answer:
                         # Make sure findable
-                        objectIds = [obj['objectId'] for obj in episode.event.metadata['objects']
-                                     if obj['objectType'] == answer and parent_object_class in obj['parentReceptacles']]
+                        parents = [parent for parent in episode.get_objects()
+                                   if parent['objectType'] == parent_object_class and parent['receptacleObjectIds'] is not None]
+                        objectIds = [objId for parent in parents for objId in parent['receptacleObjectIds'] if objId.split('|')[0] in constants.OBJECTS]
                         if not are_reachable(episode, xray_graph, objectIds=objectIds, search_for='any', DEBUG=DEBUG):
                             answer = None
 

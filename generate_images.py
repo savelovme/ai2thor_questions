@@ -100,6 +100,6 @@ def main(question_type):
 
 
 if __name__ == '__main__':
-    main('material')
+    main('preposition')
 
 

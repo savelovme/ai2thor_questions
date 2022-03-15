@@ -3,7 +3,7 @@ import random
 import numpy as np
 from utils import game_util, question_util
 
-from constants import OBJECT_CLASS_TO_ID, OBJECTS_SINGULAR, AGENT_STEP_SIZE, LOGICAL_OPERATOR_TO_ID, MIN_SIZE_DIFF
+from constants import OBJECT_CLASS_TO_ID, PARENT_CLASS_TO_ID, LOGICAL_OPERATOR_TO_ID, MIN_SIZE_DIFF
 
 
 class Question(object):
@@ -106,7 +106,7 @@ class PrepositionQuestion(Question):
 
     def __str__(self):
         """ Get the string representation of the question """
-        return question_util.get_question_str('preposition', [], OBJECT_CLASS_TO_ID[self.parent_object_class])
+        return question_util.get_question_str('preposition', [], PARENT_CLASS_TO_ID[self.parent_object_class])
 
 
 class MaterialQuestion(Question):
