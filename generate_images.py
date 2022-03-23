@@ -28,7 +28,8 @@ def main(question_type):
         scene_name = None
 
         for line in dataset_np:
-
+            if all(line == 0):
+                continue
             question_objs = []
             container_ind = None
             if question_type == 'existence':
@@ -100,6 +101,6 @@ def main(question_type):
 
 
 if __name__ == '__main__':
-    main('preposition')
+    main('existence')
 
 

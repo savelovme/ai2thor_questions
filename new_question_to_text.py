@@ -16,7 +16,7 @@ def main():
         out_file = open(os.path.splitext(file_name)[0] + '.csv', 'w')
 
         print('Processing file', file_name)
-        out_file.write('question_type;scene_number;seed;question;answer;question_object_ids;container_id\n')
+        out_file.write('question_type;scene_number;seed;question;answer;question_object_ids;container_id;image_path\n')
         if 'data_existence' in file_name:
             question_type = 'existence'
         elif 'data_logical' in file_name:
@@ -39,10 +39,12 @@ def main():
         for line in dataset_np:
             question_objs = []
             container_ind = None
+            image = None
             if question_type == 'existence':
                 scene_num, scene_seed, object_ind, answer = line
                 question_objs = [object_ind]
                 answer = str(bool(answer))
+                image = f"images/{question_type}/FloorPlan{scene_num}/{scene_seed}_{constants.OBJECTS[object_ind]}.png"
 
             elif question_type == 'logical':
                 scene_num, scene_seed, object1_ind, operator_ind, object2_ind, answer = line
@@ -53,6 +55,7 @@ def main():
                 scene_num, scene_seed, container_ind, answer_ind = line
                 question_objs = []
                 answer = constants.OBJECTS[answer_ind]
+                image = f"images/{question_type}/FloorPlan{scene_num}/{scene_seed}_{constants.RECEPTACLES[container_ind]}.png"
 
             elif question_type == 'counting':
                 scene_num, scene_seed, object_ind, answer = line
@@ -63,6 +66,7 @@ def main():
                 scene_num, scene_seed, object_ind, answer_ind = line
                 question_objs = [object_ind]
                 answer = constants.QUESTION_MATERIALS[answer_ind]
+                image = f"images/{question_type}/FloorPlan{scene_num}/{scene_seed}_{constants.OBJECTS[object_ind]}.png"
 
             elif question_type == 'material_compare':
                 scene_num, scene_seed, object1_ind, object2_ind, answer = line
@@ -84,9 +88,12 @@ def main():
             max_sentence_length = max(len(parsed_question), max_sentence_length)
             vocab.update(parsed_question)
 
+            if image and not os.path.exists(image):
+                image = None
+
             if container_ind is None:
                 container_ind = len(constants.OBJECTS)
-            out_file.write('%s;%d;%d;%s;%s;%s;%d;\n' % (question_type, scene_num, scene_seed, question_str, answer, question_objs, container_ind))
+            out_file.write('%s;%d;%d;%s;%s;%s;%d;%s\n' % (question_type, scene_num, scene_seed, question_str, answer, question_objs, container_ind, image))
             out_file.flush()
         print('Generated %d sentences for %s' % (dataset_np.shape[0], file_name))
 

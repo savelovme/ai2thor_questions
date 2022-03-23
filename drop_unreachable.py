@@ -111,9 +111,12 @@ def main(dataset_type, question_type):
             if bool(answer) != all(reachable):
                 continue
         elif question_type == 'logical':
-            if constants.LOGICAL_OPERATORS[operator_ind] == 'and' and not all(reachable):
+            if constants.LOGICAL_OPERATORS[operator_ind] == 'and' and bool(answer) != all(reachable):
                 continue
-            elif constants.LOGICAL_OPERATORS[operator_ind] == 'or' and not any(reachable):
+            elif constants.LOGICAL_OPERATORS[operator_ind] == 'or' and bool(answer) != any(reachable):
+                continue
+        elif question_type == 'counting':
+            if bool(answer) != all(reachable):
                 continue
         elif not all(reachable):
             continue
@@ -121,6 +124,9 @@ def main(dataset_type, question_type):
         checked['questions/question'][data_ind, :] = line
         data_ind += 1
         checked.flush()
+        if data_ind % 100 == 0:
+            print()
+            print(f"{data_ind} questions ready")
 
     episode.env.stop_unity()
 
