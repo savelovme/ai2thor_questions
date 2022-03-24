@@ -36,6 +36,8 @@ def main(question_type):
                 scene_num, scene_seed, object_ind, answer = line
                 question_objs = [object_ind]
                 images = [f"images/{question_type}/FloorPlan{scene_num}/{scene_seed}_{constants.OBJECTS[object_ind]}.png"]
+                masks = [f"images/{question_type}/FloorPlan{scene_num}/{scene_seed}_{constants.OBJECTS[object_ind]}_segmentation.png"]
+
 
             elif question_type == 'logical':
                 scene_num, scene_seed, object1_ind, operator_ind, object2_ind, answer = line
@@ -45,6 +47,7 @@ def main(question_type):
                 scene_num, scene_seed, container_ind, answer_ind = line
                 question_objs = [answer_ind]
                 images = [f"images/{question_type}/FloorPlan{scene_num}/{scene_seed}_{constants.RECEPTACLES[container_ind]}.png"]
+                masks = [f"images/{question_type}/FloorPlan{scene_num}/{scene_seed}_{constants.RECEPTACLES[container_ind]}_segmentation.png"]
 
             #elif question_type == 'counting':
             #    scene_num, scene_seed, object_ind, answer = line
@@ -54,6 +57,7 @@ def main(question_type):
                 scene_num, scene_seed, object_ind, answer_ind = line
                 question_objs = [object_ind]
                 images = [f"images/{question_type}/FloorPlan{scene_num}/{scene_seed}_{constants.OBJECTS[object_ind]}.png"]
+                masks = [f"images/{question_type}/FloorPlan{scene_num}/{scene_seed}_{constants.OBJECTS[object_ind]}_segmentation.png"]
 
             elif question_type == 'material_compare':
                 scene_num, scene_seed, object1_ind, object2_ind, answer = line
@@ -84,23 +88,23 @@ def main(question_type):
             if any([object_ind==0 for object_ind in question_objs]):
                 continue
 
-            if all([os.path.exists(image_name)
-                    for image_name in images]):
+            if all([os.path.exists(filename) for filename in images+masks]):
                 continue
 
             episode.initialize_episode(scene_seed=scene_seed)
 
-            for object_ind, image_name in zip(question_objs, images):
+            for object_ind, image_name, mask_name in zip(question_objs, images, masks):
                 if container_ind is not None:
-                    image = get_object_cv2img(episode, xray_graph, constants.OBJECTS[object_ind], constants.RECEPTACLES[container_ind])
+                    image, masks = get_object_cv2img(episode, xray_graph, constants.OBJECTS[object_ind], constants.RECEPTACLES[container_ind])
                 else:
-                    image = get_object_cv2img(episode, xray_graph, constants.OBJECTS[object_ind])
+                    image, masks = get_object_cv2img(episode, xray_graph, constants.OBJECTS[object_ind])
                 cv2.imwrite(image_name, image)
+                cv2.imwrite(mask_name, masks)
 
     episode.env.stop_unity()
 
 
 if __name__ == '__main__':
-    main('existence')
+    main('material')
 
 

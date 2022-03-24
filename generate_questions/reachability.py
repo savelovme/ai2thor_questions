@@ -117,7 +117,7 @@ def get_object_cv2img(episode, xray_graph, object_class, parent_object_class=Non
                               constants.OBJECT_CLASS_TO_ID[obj['objectType']] + 1] = 1
 
     if len(objectIds) == 0:
-        return episode.event.frame
+        return episode.event.frame, episode.event.class_segmentation_frame
 
     graph_points = xray_graph.points.copy()
     _, x_str, y_str, z_str = objectIds[0].split('|')
@@ -144,13 +144,22 @@ def get_object_cv2img(episode, xray_graph, object_class, parent_object_class=Non
                     if obj['objectId'] not in objectIds:
                         continue
                     if obj['visible']:
-                        return event.cv2img
+                        seg_frame = np.zeros_like(event.class_segmentation_frame)
+                        for obj_class, mask in event.class_masks.items():
+                            if obj_class in constants.OBJECTS:
+                                seg_frame[mask] = event.class_segmentation_frame[mask]
 
+                        return event.cv2img, seg_frame
                 event = episode.env.step(action="LookUp")
                 for obj in event.metadata['objects']:
                     if obj['objectId'] not in objectIds:
                         continue
                     if obj['visible']:
-                        return event.cv2img
+                        seg_frame = np.zeros_like(event.class_segmentation_frame)
+                        for obj_class, mask in event.class_masks.items():
+                            if obj_class in constants.OBJECTS:
+                                seg_frame[mask] = event.class_segmentation_frame[mask]
 
-    return None  # episode.event.cv2img
+                        return event.cv2img, seg_frame
+
+    return None, None  # episode.event.cv2img

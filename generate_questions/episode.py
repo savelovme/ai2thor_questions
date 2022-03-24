@@ -16,13 +16,14 @@ class Episode(object):
         """
 
         # Start the environment.
-        self.env = self.start_env(image_gen)
+        self.image_gen = image_gen
+        self.env = self.start_env()
         self.event = None
         self.is_initialized = False
 
-    def start_env(self, image_gen):
+    def start_env(self):
         """Starts the environment."""
-        if image_gen:
+        if self.image_gen:
             env = game_util.create_env(width=IMAGE_SIZE, height=IMAGE_SIZE)
         else:
             env = game_util.create_env(quality='Very Low')
@@ -44,7 +45,7 @@ class Episode(object):
         """Get env specific information."""
         event = game_util.reset(self.env, self.scene_name,
                                 render_depth_image=False,
-                                render_class_image=False,
+                                render_class_image=self.image_gen,
                                 render_object_image=True)
         self.object_id_to_object_class = {
             obj['objectId']: obj['objectType'] for obj in event.metadata['objects']
@@ -110,7 +111,7 @@ class Episode(object):
         random.seed(scene_seed)
         self.event = game_util.reset(self.env, self.scene_name,
                                      render_depth_image=False,
-                                     render_class_image=False,
+                                     render_class_image=self.image_gen,
                                      render_object_image=True)
 
         if num_duplicates is None:
