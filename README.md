@@ -1,6 +1,6 @@
 # AI2-THOR Dataset
 
-The dataset was generated in [AI2-THOR](https://github.com/allenai/ai2thor) a near photo-realistic 3D environment, using its Python API and is based on [IQUAD](https://github.com/danielgordon10/thor-iqa-cvpr-2018). 
+The dataset was generated in [AI2-THOR](https://github.com/allenai/ai2thor), a near photo-realistic 3D environment, using its Python API and is based on [IQUAD](https://github.com/danielgordon10/thor-iqa-cvpr-2018). 
 
 ## Data
 
