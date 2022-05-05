@@ -6,7 +6,7 @@ The dataset was generated in [AI2-THOR](https://github.com/allenai/ai2thor), a n
 
 The dataset is available [here](https://drive.google.com/drive/folders/1lR-z9C5rmmZ5pEHh-ici1l2r0aIU6-Vl?usp=sharing)
 
-It totals 269489 questions and is split ted into three parts: train, val/seen_scenes and val/seen_scenes. 
+It totals 269489 questions and is split ted into three parts: train, val/seen_scenes and val/unseen_scenes. 
 25 kitchen scenes and 36 types of objects in them were used for 8 types of questions.
 For single-object questions images and segmentation masks were generated.
 Information about splits for questions an be found in Table.
